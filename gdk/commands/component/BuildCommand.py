@@ -42,7 +42,8 @@ class BuildCommand(Command):
         build_system = component_build_config["build_system"]
 
         logging.info(
-            "Building the component '{}' with the given project configuration.".format(self.project_config["component_name"])
+            "Building the component '{}' with the given project configuration.".format(
+                self.project_config["component_name"])
         )
         # Create build directories
         self.create_gg_build_directories()
@@ -180,7 +181,8 @@ class BuildCommand(Command):
             artifacts_zip_build = Path(zip_build).joinpath(utils.current_directory.name).resolve()
             utils.clean_dir(zip_build)
             logging.debug("Copying over component files to the '{}' folder.".format(artifacts_zip_build.name))
-            shutil.copytree(utils.current_directory, artifacts_zip_build, ignore=self._ignore_files_during_zip)
+            shutil.copytree(utils.current_directory, artifacts_zip_build,
+                            ignore=shutil.ignore_patterns(*self._ignore_files_during_zip(None, None)))
 
             # Get build file name without extension. This will be used as name of the archive.
             archive_file = utils.current_directory.name
@@ -324,7 +326,8 @@ class BuildCommand(Command):
                         s3_client = project_utils.create_s3_client(self.project_config["region"])
                     if not self.is_artifact_in_s3(s3_client, artifact["URI"]):
                         raise Exception(
-                            "Could not find artifact with URI '{}' on s3 or inside the build folders.".format(artifact["URI"])
+                            "Could not find artifact with URI '{}' on s3 or inside the build folders.".format(
+                                artifact["URI"])
                         )
 
     def is_artifact_in_build(self, artifact, build_folders):
@@ -364,7 +367,8 @@ class BuildCommand(Command):
                     f"Could not find the artifact file specified in the recipe '{artifact_file_name}' inside the build folder"
                     f" '{build_folder}'."
                 )
-        logging.warning(f"Could not find the artifact file '{artifact_file_name}' in the build folder '{build_folders}'.")
+        logging.warning(
+            f"Could not find the artifact file '{artifact_file_name}' in the build folder '{build_folders}'.")
         return False
 
     def is_artifact_in_s3(self, s3_client, artifact_uri):
@@ -412,7 +416,8 @@ class BuildCommand(Command):
         parsed_component_recipe["ComponentName"] = self.project_config["component_name"]
         parsed_component_recipe["ComponentVersion"] = self.project_config["component_version"]
         parsed_component_recipe["ComponentPublisher"] = self.project_config["component_author"]
-        gg_build_recipe_file = Path(self.project_config["gg_build_recipes_dir"]).joinpath(component_recipe_file_name).resolve()
+        gg_build_recipe_file = Path(self.project_config["gg_build_recipes_dir"]).joinpath(
+            component_recipe_file_name).resolve()
 
         with open(gg_build_recipe_file, "w") as recipe_file:
             try:
